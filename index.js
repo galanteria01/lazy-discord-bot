@@ -123,8 +123,16 @@ client.on('message',msg => {
     })
   }
 
-  if(msg.content === "$invitelink"){
-    msg.channel.send("Implementing soon");
+  if(msg.content === "$invitebot"){
+    client.generateInvite({
+      permissions: ['SEND_MESSAGES', 'MANAGE_GUILD', 'MENTION_EVERYONE'],
+    })
+  .then(link => msg.channel.send(`The invite link is ${link}`))
+  .catch(console.error);
+  }
+
+  if(msg.content === "$inviteuser"){
+    
   }
 
   if(msg.content === "$ban"){
