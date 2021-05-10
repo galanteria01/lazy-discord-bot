@@ -84,6 +84,16 @@ const getQuote = () => {
   })
 }
 
+const getJoke = () => {
+  return fetch(process.env.JOKE_API)
+  .then(res => {
+    return res.json();
+  })
+  .then(data => {
+    return data; 
+  })
+}
+
 client.on('ready',() => {console.log(client.user.tag + " is running...")});
 
 client.on('channelCreate', channel => {
@@ -100,6 +110,10 @@ client.on('message',msg => {
     client.sweepMessages(purgeTime);
     msg.channel.send(`Messages older then ${purgeTime} are removed`);
 
+  }
+
+  if(msg.content === '$info'){
+    msg.reply(`\nYour username: ${msg.author.username}\nYour id: ${msg.author.id}`)
   }
 
   if(msg.content === "$stop"){
@@ -129,7 +143,10 @@ client.on('message',msg => {
     }
   })
 
-  
+  if(msg.content === "$avatar"){
+    msg.reply(msg.author.displayAvatarURL({ format: 'png', dynamic: true }));
+  }
+
   if(msg.content.startsWith("$new")){
     encouragingMessage = msg.content.split("$new ")[1];
     updateEncouragements(encouragingMessage);
@@ -175,6 +192,22 @@ client.on('message',msg => {
     
   }
 
+  if(msg.content === "$joke"){
+    getJoke().then(
+      joke => {
+        msg.channel.send(`
+        Joke of the day
+        ${joke['setup']}
+        ${joke['punchline']}
+        `)
+      }
+    )
+  }
+
+  if(msg.content === "$server"){
+    msg.channel.send(`Server name: ${msg.guild.name}\nTotal members: ${msg.guild.memberCount}`)
+  }
+
   if(msg.content.startsWith("$list")){
     db.get('encouragements').then(encouragements => {
       msg.channel.send(encouragements);
@@ -197,11 +230,21 @@ client.on('message',msg => {
     msg.channel.send("Implementing soon");
   }
 
-  if(msg.content === "$kick"){
-    msg.channel.send("Implementing soon");
-  }
+  if(msg.content.startsWith("$kick ")){
+    if (msg.member.hasPermission("KICK_MEMBERS")) {
+    if (msg.members.mentions.first()) {
+        try {
+            msg.members.mentions.first().kick();
+        } catch {
+            msg.reply("I do not have permissions to kick " + msg.members.mentions.first());
+        }
+    } else {
+        msg.reply("You do not have permissions to kick " + msg.members.mentions.first());
+    }
+}
+}
 
-  if(msg.content === "$mute"){
+if(msg.content === "$mute"){
     msg.channel.send("Implementing soon");
   }
 
