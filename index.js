@@ -49,8 +49,33 @@ const deleteEncouragements = (index) => {
   })
 }
 
+const getCovidStats = (country) => {
+  return fetch("https://corona.lmao.ninja/v2/countries/india?yesterday=true&strict=true&query")
+  .then(res => {
+    return res.json();
+  })
+  .catch(e => console.log(e))
+  .then(
+    data => {
+      return data;
+    }
+  ).catch((e) => console.log(e))
+}
+
+const getCovidTotalStats = () => {
+  return fetch("https://corona.lmao.ninja/v2/all?yesterday")
+  .then(res => {
+    return res.json();
+  })
+  .then(
+    data => {
+      return data;
+    }
+  )
+}
+
 const getQuote = () => {
-  return fetch("https://zenquotes.io/api/random")
+  return fetch(process.env.QUOTE_API)
   .then(res => {
     return res.json();
   })
@@ -115,6 +140,39 @@ client.on('message',msg => {
     index = parseInt(msg.content.split("$delete ")[1]);
     deleteEncouragements(index);
     msg.channel.send("A encouraging message deleted successfully")
+  }
+
+  if(msg.content.startsWith("$covid")){
+    country = msg.content.split("$covid ")[1];
+    getCovidStats(country).then(data => {
+      msg.channel.send(`
+        Corona situations in ${data['country']}:
+        Cases: ${data['cases']}
+        Death: ${data['deaths']}
+        Recovered: ${data['recovered']}
+        Today Death: ${data['todayDeaths']}
+        Today Recovered: ${data['todayRecovered']}
+        Active: ${data["active"]}
+      `)
+    })
+    
+  }
+
+  if(msg.content === "$stats"){
+    getCovidTotalStats().then(
+      data => {
+        msg.channel.send(`Covid stats:
+        Total: ${data['updated']}
+        Death: ${data['deaths']}
+        Recovered: ${data['recovered']}
+        Active: ${data['active']}
+        Death Today: ${data['todayDeath']}
+        Recovered Today: ${data['todayRecovered']}
+        Critical: ${data['critical']}
+        `);
+        }
+    );
+    
   }
 
   if(msg.content.startsWith("$list")){
