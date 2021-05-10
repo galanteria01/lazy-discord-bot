@@ -61,9 +61,20 @@ const getQuote = () => {
 
 client.on('ready',() => {console.log(client.user.tag + " is running...")});
 
+client.on('channelCreate', channel => {
+  
+})
+
 client.on('message',msg => {
   if(msg.author.bot){
     return
+  }
+
+  if(msg.content.startsWith("$purge")){
+    purgeTime = parseInt(msg.content.split("$purge ")[1]);
+    client.sweepMessages(purgeTime);
+    msg.channel.send(`Messages older then ${purgeTime} are removed`);
+
   }
 
   if(msg.content === "$stop"){
@@ -74,10 +85,6 @@ client.on('message',msg => {
   if(msg.content === "$start"){
     db.set('responding', true);
     msg.channel.send("Bot has started motivating Niggas");
-  }
-
-  if(msg.content === "$invite"){
-    msg.channel.createInvite().then(invite => msg.channel.send(invite));
   }
 
   if (msg.content === "$inspire"){
@@ -110,28 +117,29 @@ client.on('message',msg => {
     msg.channel.send("A encouraging message deleted successfully")
   }
 
-  if(message.content.startsWith("$list")){
+  if(msg.content.startsWith("$list")){
     db.get('encouragements').then(encouragements => {
       msg.channel.send(encouragements);
     })
   }
 
-  if(message.content === "$invitelink"){
+  if(msg.content === "$invitelink"){
     msg.channel.send("Implementing soon");
   }
 
-  if(message.content === "$ban"){
+  if(msg.content === "$ban"){
     msg.channel.send("Implementing soon");
   }
 
-  if(message.content === "$kick"){
+  if(msg.content === "$kick"){
     msg.channel.send("Implementing soon");
   }
 
-  if(message.content === "$mute"){
+  if(msg.content === "$mute"){
     msg.channel.send("Implementing soon");
   }
 
 })
-
-client.login(process.env.BOT_TOKEN);
+if(process.env.BOT_TOKEN){
+  client.login(process.env.BOT_TOKEN);
+}
