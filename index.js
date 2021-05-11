@@ -244,29 +244,42 @@ client.on('message',msg => {
     
   }
 
-  if(msg.content === "$ban"){
-    msg.channel.send("Implementing soon");
+  if(msg.content === "$ban "){
+    if (msg.member.hasPermission("BAN_MEMBERS")) {
+    if (msg.mentions.members.first()) {
+        try {
+            msg.mentions.members.first().ban();
+            msg.reply("I have banned " + msg.mentions.members.first() + '\nRetard go away' );
+        } catch {
+            msg.reply("I do not have permissions to banned " + msg.mentions.members.first());
+        }
+    } else {
+        msg.reply("You do not have permissions to banned " + msg.mentions.members.first());
+    }
+  }
   }
 
   if(msg.content.startsWith("$kick ")){
     if (msg.member.hasPermission("KICK_MEMBERS")) {
-    if (msg.members.mentions.first()) {
+    if (msg.mentions.members.first()) {
         try {
-            msg.members.mentions.first().kick();
+            msg.mentions.members.first().kick();
+            msg.reply("I have kicked " + msg.mentions.members.first());
         } catch {
-            msg.reply("I do not have permissions to kick " + msg.members.mentions.first());
+            msg.reply("I do not have permissions to kick " + msg.mentions.members.first());
         }
     } else {
-        msg.reply("You do not have permissions to kick " + msg.members.mentions.first());
+        msg.reply("You do not have permissions to kick " + msg.mentions.members.first());
     }
-}
-}
-
-if(msg.content === "$mute"){
-    msg.channel.send("Implementing soon");
+  }
   }
 
+  if(msg.content === "$mute"){
+      msg.channel.send("Implementing soon");
+    }
+
 })
+
 if(process.env.BOT_TOKEN){
   client.login(process.env.BOT_TOKEN);
 }
