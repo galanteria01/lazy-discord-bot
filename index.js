@@ -13,7 +13,7 @@ const sadWords = [
   "angry", 
   "unhappy", 
   "dukhi"
-  ];
+];
 
 const starterEncouragements = [
   "Cheer up", 
@@ -232,6 +232,14 @@ client.on('message',msg => {
     })
   }
 
+  if(msg.content === "$hello"){
+    msg.react('🤔');
+  }
+
+  if(msg.content.startsWith("$pin")){
+    msg.channel.pin();
+  }
+
   if(msg.content === "$invitebot"){
     client.generateInvite({
       permissions: ['SEND_MESSAGES', 'MANAGE_GUILD', 'MENTION_EVERYONE'],
@@ -241,7 +249,15 @@ client.on('message',msg => {
   }
 
   if(msg.content === "$inviteuser"){
-    
+    msg.channel.createInvite({
+      maxUses: 2,
+      unique: true,
+      maxAge: 86400
+    }).then(link => {
+      msg.reply(`The invite link is https://discord.gg/${link.code}`);
+    }).catch((e) => {
+      msg.reply("You dont have required permission! ")
+    })
   }
 
   if(msg.content === "$ban "){
