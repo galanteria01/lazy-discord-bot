@@ -94,6 +94,16 @@ const getJoke = () => {
   })
 }
 
+const getMeme = () => {
+  return fetch(process.env.MEME_API)
+  .then(res => {
+    return res.json();
+  })
+  .then(data => {
+    return data;
+  })
+}
+
 client.on('ready',() => {console.log(client.user.tag + " is running...")});
 
 client.on('channelCreate', channel => {
@@ -191,8 +201,8 @@ client.on('message',msg => {
     );
     
   }
-
-  if(msg.content === "$joke"){
+  
+  if(msg.content.startsWith("$joke")){
     getJoke().then(
       joke => {
         msg.channel.send(`
@@ -200,6 +210,14 @@ client.on('message',msg => {
         ${joke['setup']}
         ${joke['punchline']}
         `)
+      }
+    )
+  }
+
+  if(msg.content.startsWith("$meme")){
+    getMeme().then(
+      meme => {
+        msg.channel.send(meme['subreddit'], {files: meme['preview']})
       }
     )
   }
