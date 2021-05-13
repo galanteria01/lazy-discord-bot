@@ -1,6 +1,13 @@
 const Discord = require('discord.js');
 const fetch = require('node-fetch');
 const Database = require("@replit/database");
+const {
+  getMeme, 
+  getJoke, 
+  getCovidStats, 
+  getCovidTotalStats, 
+  getQuote
+  } = require('./modules/api')
 
 const db = new Database();
 const client = new Discord.Client();
@@ -49,60 +56,7 @@ const deleteEncouragements = (index) => {
   })
 }
 
-const getCovidStats = (country) => {
-  return fetch("https://corona.lmao.ninja/v2/countries/" + country + "?yesterday=true&strict=true&query")
-  .then(res => {
-    return res.json();
-  })
-  .catch(e => console.log(e))
-  .then(
-    data => {
-      return data;
-    }
-  ).catch((e) => console.log(e))
-}
 
-const getCovidTotalStats = () => {
-  return fetch("https://corona.lmao.ninja/v2/all?yesterday")
-  .then(res => {
-    return res.json();
-  })
-  .then(
-    data => {
-      return data;
-    }
-  )
-}
-
-const getQuote = () => {
-  return fetch(process.env.QUOTE_API)
-  .then(res => {
-    return res.json();
-  })
-  .then(data => {
-    return data[0]['q'] + " - " + data[0]['a']; 
-  })
-}
-
-const getJoke = () => {
-  return fetch(process.env.JOKE_API)
-  .then(res => {
-    return res.json();
-  })
-  .then(data => {
-    return data; 
-  })
-}
-
-const getMeme = () => {
-  return fetch(process.env.MEME_API)
-  .then(res => {
-    return res.json();
-  })
-  .then(data => {
-    return data;
-  })
-}
 
 client.on('ready',() => {console.log(client.user.tag + " is running...")});
 
