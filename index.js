@@ -1,6 +1,8 @@
 const Discord = require('discord.js');
 const fetch = require('node-fetch');
 const Database = require("@replit/database");
+const { MessageEmbed } = require('discord.js');
+
 const {
   getMeme, 
   getJoke, 
@@ -171,7 +173,7 @@ client.on('message',msg => {
   if(msg.content.startsWith("$meme")){
     getMeme().then(
       meme => {
-        msg.channel.send(meme['subreddit'], {files: meme['preview']})
+        msg.channel.send(meme['title'], {files: meme['preview']})
       }
     )
   }
@@ -248,7 +250,27 @@ client.on('message',msg => {
       msg.channel.send("Implementing soon");
     }
 
+    if (msg.content.startsWith('$embed')) {
+    embedMessage = msg.content.split("$embed ")[1];
+
+    const embed = new MessageEmbed()
+      // Set the title of the field
+      .setTitle('Readme')
+      // Set the color of the embed
+      .setColor(0xff0000)
+      // Set the main content of the embed
+      .setDescription(embedMessage);
+    // Send the embed to the same channel as the message
+    msg.channel.send(embed);
+  }
+
 })
+
+client.on('guildMemberAdd', member => {
+  const channel = member.guild.channels.cache.find(ch => ch.name === 'member-log');
+  if (!channel) return;
+  channel.send(`Welcome to the server, ${member}`);
+});
 
 if(process.env.BOT_TOKEN){
   client.login(process.env.BOT_TOKEN);

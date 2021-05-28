@@ -1,3 +1,5 @@
+const fetch = require('node-fetch');
+
 const getCovidStats = (country) => {
   return fetch("https://corona.lmao.ninja/v2/countries/" + country + "?yesterday=true&strict=true&query")
   .then(res => {
